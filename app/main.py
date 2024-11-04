@@ -6,6 +6,7 @@ from fastapi_login import LoginManager
 from bluesky_api import BlueskyAPI, is_app_passwordy
 import db
 from starlette.middleware.sessions import SessionMiddleware
+from starlette.staticfiles import StaticFiles
 from datetime import datetime
 
 app = FastAPI()
@@ -13,6 +14,7 @@ SECRET = os.getenv("SECRET_KEY", "foo")
 app.add_middleware(SessionMiddleware, secret_key=SECRET)
 
 templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Configure LoginManager
 manager = LoginManager(SECRET, token_url="/login", use_cookie=True)
