@@ -5,3 +5,4 @@ requests
 fastapi-login
 jinja2
 python-multipart
+itsdangerous
