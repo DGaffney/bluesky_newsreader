@@ -32,7 +32,7 @@ class BlueskyAPI:
         current = skeet
         for attr in attributes:
             current = getattr(current, attr.split('.')[-1], None)
-            if isinstance(current, External):
+            if isinstance(current, ViewExternal):
                 return current
     
     def is_link_skeet(self, skeet):
