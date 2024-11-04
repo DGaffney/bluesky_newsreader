@@ -1,6 +1,54 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Your Timeline</h2>
-<pre>{{ timeline | safe }}</pre>
+<div class="container mt-4">
+    <h2>Timeline</h2>
+    {% for url, skeets in timeline.items() %}
+        {% set first_skeet = skeets[0] %}
+        {% set embed = first_skeet.embed %}
+        
+        <!-- Article Preview -->
+        <div class="card mb-4">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="{{ embed.thumb }}" class="card-img" alt="Article thumbnail">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ embed.title }}</h5>
+                        <p class="card-text">{{ embed.description }}</p>
+                        <a href="{{ embed.uri }}" class="btn btn-primary" target="_blank">Read more</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Avatars -->
+        <div class="mb-2">
+            <span>Shared by:</span>
+            {% set distinct_users = [] %}
+            {% for skeet in skeets %}
+                {% if skeet.post.author.handle not in distinct_users %}
+                    <img src="{{ skeet.post.author.avatar }}" class="rounded-circle" width="30" height="30" alt="{{ skeet.post.author.display_name }}">
+                    {% set _ = distinct_users.append(skeet.post.author.handle) %}
+                {% endif %}
+                {% if loop.index == 5 %}
+                    {% break %}
+                {% endif %}
+            {% endfor %}
+            {% if distinct_users|length > 5 %}
+                <span class="ml-2">+{{ distinct_users|length - 5 }} more</span>
+            {% endif %}
+        </div>
+
+        <!-- Stats -->
+        <div class="text-muted">
+            <p>Total Likes: {{ skeets|sum(attribute='post.like_count') }}</p>
+            <p>Total Reskeets: {{ skeets|sum(attribute='post.repost_count') }}</p>
+            <p>First Post Time: {{ skeets|map(attribute='post.record.created_at')|min }}</p>
+            <p>Last Post Time: {{ skeets|map(attribute='post.indexed_at')|max }}</p>
+        </div>
+        <hr>
+    {% endfor %}
+</div>
 {% endblock %}

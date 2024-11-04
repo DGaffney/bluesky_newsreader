@@ -18,7 +18,7 @@ class BlueskyAPI:
         page = self.client.get_timeline(limit=PAGE_LIMIT)
         skeets = page.feed
         while self.get_more(skeets, page):
-            page = self.client.get_timeline(limit=PAGE_LIMIT)
+            page = self.client.get_timeline(limit=PAGE_LIMIT, cursor=page.cursor)
             for skeet in page.feed:
                 skeets.append(skeet)
         return skeets
