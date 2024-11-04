@@ -64,4 +64,4 @@ async def show_timeline(request: Request):
         )
         return templates.TemplateResponse("timeline.html", {"request": request, "timeline": sorted_timeline})
     else:
-        templates.TemplateResponse("login.html", {"request": request})
+        return templates.TemplateResponse("login.html", {"request": request})
