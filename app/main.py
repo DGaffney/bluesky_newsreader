@@ -6,6 +6,7 @@ from fastapi_login import LoginManager
 from bluesky_api import BlueskyAPI, is_app_passwordy
 import db
 from starlette.middleware.sessions import SessionMiddleware
+from datetime import datetime
 
 app = FastAPI()
 SECRET = os.getenv("SECRET_KEY", "foo")
@@ -16,6 +17,12 @@ templates = Jinja2Templates(directory="templates")
 # Configure LoginManager
 manager = LoginManager(SECRET, token_url="/login", use_cookie=True)
 manager.cookie_name = "auth_cookie"
+@app.template_filter('datetimeformat')
+def datetimeformat(value, format='%Y-%m-%d %I:%M %p'):
+    dt = datetime.fromisoformat(value)
+    return dt.strftime(format)
+
+
 @app.get("/", response_class=HTMLResponse)
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
