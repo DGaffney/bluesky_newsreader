@@ -17,11 +17,14 @@ templates = Jinja2Templates(directory="templates")
 # Configure LoginManager
 manager = LoginManager(SECRET, token_url="/login", use_cookie=True)
 manager.cookie_name = "auth_cookie"
-@app.template_filter('datetimeformat')
+
+# Define the custom filter function
 def datetimeformat(value, format='%Y-%m-%d %I:%M %p'):
     dt = datetime.fromisoformat(value)
     return dt.strftime(format)
 
+# Register the custom filter with the Jinja2 environment
+templates.env.filters['datetimeformat'] = datetimeformat
 
 @app.get("/", response_class=HTMLResponse)
 async def login_page(request: Request):
