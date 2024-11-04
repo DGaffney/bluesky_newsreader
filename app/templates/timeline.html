@@ -6,8 +6,8 @@
     {% for url, skeets in timeline.items() %}
         {% set first_skeet = skeets[0] %}
         {% set embed = first_skeet.embed %}
-        
-        <!-- Article Preview -->
+
+        <!-- Article Preview Card -->
         <div class="card mb-4">
             <div class="row no-gutters">
                 <div class="col-md-4">
@@ -27,17 +27,19 @@
         <div class="mb-2">
             <span>Shared by:</span>
             {% set distinct_users = [] %}
+            {% set max_users = 5 %}
+            {% set user_count = 0 %}
             {% for skeet in skeets %}
-                {% if skeet.post.author.handle not in distinct_users %}
-                    <img src="{{ skeet.post.author.avatar }}" class="rounded-circle" width="30" height="30" alt="{{ skeet.post.author.display_name }}">
-                    {% set _ = distinct_users.append(skeet.post.author.handle) %}
-                {% endif %}
-                {% if loop.index == 5 %}
-                    {% break %}
+                {% if user_count < max_users %}
+                    {% if skeet.post.author.handle not in distinct_users %}
+                        <img src="{{ skeet.post.author.avatar }}" class="rounded-circle" width="30" height="30" alt="{{ skeet.post.author.display_name }}">
+                        {% set _ = distinct_users.append(skeet.post.author.handle) %}
+                        {% set user_count = user_count + 1 %}
+                    {% endif %}
                 {% endif %}
             {% endfor %}
-            {% if distinct_users|length > 5 %}
-                <span class="ml-2">+{{ distinct_users|length - 5 }} more</span>
+            {% if distinct_users|length > max_users %}
+                <span class="ml-2">+{{ distinct_users|length - max_users }} more</span>
             {% endif %}
         </div>
 
