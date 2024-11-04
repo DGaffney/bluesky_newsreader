@@ -1,3 +1,4 @@
+import re
 from atproto import Client
 from atproto_client.models.app.bsky.embed.external import External
 import db
@@ -51,3 +52,17 @@ class BlueskyAPI:
     
     def get_news_feed(self):
         return self.get_links(self.get_timeline())
+
+
+def is_app_passwordy(s: str) -> bool:
+    """
+    Determines if a string matches the pattern with four 4-character segments separated by dashes.
+    """
+    if len(s) != 19:  # Check total length
+        return False
+    if s.count('-') != 3:  # Check the number of dashes
+        return False
+    # Check the pattern with a regular expression
+    pattern = r'^[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}$'
+    return bool(re.match(pattern, s))
+
