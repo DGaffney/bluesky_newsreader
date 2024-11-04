@@ -20,6 +20,9 @@ manager.cookie_name = "auth_cookie"
 
 # Define the custom filter function
 def datetimeformat(value, format='%Y-%m-%d %I:%M %p'):
+    # Replace 'Z' with '+00:00' for compatibility with fromisoformat
+    if value.endswith('Z'):
+        value = value.replace('Z', '+00:00')
     dt = datetime.fromisoformat(value)
     return dt.strftime(format)
 
