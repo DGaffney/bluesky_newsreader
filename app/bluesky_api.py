@@ -1,6 +1,6 @@
 import re
 from atproto import Client
-from atproto_client.models.app.bsky.embed.external import External
+from atproto_client.models.app.bsky.embed.external import ViewExternal
 import db
 TIMELINE_MIN = 1000
 PAGE_LIMIT = 100
