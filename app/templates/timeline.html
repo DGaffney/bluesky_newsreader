@@ -5,7 +5,7 @@
     <h2>Timeline</h2>
     {% for url, skeets in timeline.items() %}
         {% set first_skeet = skeets[0] %}
-        {% set embed = first_skeet.embed %}
+        {% set embed = first_skeet.post.embed %}
 
         <!-- Article Preview Card -->
         <div class="card mb-4">
