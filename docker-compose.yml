@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+    container_name: bluesky-news
+    env_file:
+      - .env  # Load environment variables from .env file
+    volumes:
+      - ./app:/usr/src/app  # Mount local 'app' folder to container
+    ports:
+      - "8000:8000"  # Expose port 8000 for the FastAPI app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
