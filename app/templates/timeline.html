@@ -11,13 +11,13 @@
         <div class="card mb-4">
             <div class="row no-gutters">
                 <div class="col-md-4">
-                    <img src="{{ embed.thumb }}" class="card-img" alt="Article thumbnail">
+                    <img src="{{ embed.external.thumb }}" class="card-img" alt="Article thumbnail">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
-                        <h5 class="card-title">{{ embed.title }}</h5>
-                        <p class="card-text">{{ embed.description }}</p>
-                        <a href="{{ embed.uri }}" class="btn btn-primary" target="_blank">Read more</a>
+                        <h5 class="card-title">{{ embed.external.title }}</h5>
+                        <p class="card-text">{{ embed.external.description }}</p>
+                        <a href="{{ embed.external.uri }}" class="btn btn-primary" target="_blank">Read more</a>
                     </div>
                 </div>
             </div>
