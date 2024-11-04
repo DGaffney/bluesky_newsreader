@@ -4,7 +4,7 @@ from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi_login import LoginManager
-from atproto_helper import get_user_timeline
+from bluesky_api import BlueskyAPI
 import db
 from starlette.middleware.sessions import SessionMiddleware
 
