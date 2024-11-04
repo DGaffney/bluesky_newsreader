@@ -34,5 +34,16 @@ async def login(request: Request, username: str = Form(...), password: str = For
 @app.get("/timeline", response_class=HTMLResponse)
 async def show_timeline(request: Request):
     client = BlueskyAPI(request.session['username'], request.session['password'])
-    return templates.TemplateResponse("timeline.html", {"request": request, "timeline": client.get_news_feed()})
+    timeline = client.get_news_feed()  # This returns a dict with URLs as keys and lists of skeets as values
 
+    # Sort the timeline
+    sorted_timeline = sorted(
+        timeline.items(),
+        key=lambda item: (
+            len({skeet.post.author.handle for skeet in item[1]}),  # Number of distinct users
+            sum(skeet.post.like_count for skeet in item[1]),       # Total likes
+            sum(skeet.post.repost_count for skeet in item[1])      # Total reskeets
+        ),
+        reverse=True  # Sort in descending order
+    )
+    return templates.TemplateResponse("timeline.html", {"request": request, "timeline": sorted_timeline})

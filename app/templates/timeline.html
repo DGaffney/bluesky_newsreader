@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container mt-4">
     <h2>Timeline</h2>
-    {% for url, skeets in timeline.items() %}
+    {% for url, skeets in timeline %}
         {% set first_skeet = skeets[0] %}
         {% set embed = first_skeet.post.embed %}
 
