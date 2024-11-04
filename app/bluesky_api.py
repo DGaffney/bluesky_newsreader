@@ -27,10 +27,7 @@ class BlueskyAPI:
         attributes = [
             'post',
             'post.embed',
-            'post.embed.record',
-            'post.embed.record.value',
-            'post.embed.record.value.embed',
-            'post.embed.record.value.embed.external'
+            'post.embed.external',
         ]
         current = skeet
         for attr in attributes:

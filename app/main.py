@@ -34,5 +34,4 @@ async def login(request: Request, username: str = Form(...), password: str = For
 @app.get("/timeline", response_class=HTMLResponse)
 async def show_timeline(request: Request):
     client = BlueskyAPI(request.session['username'], request.session['password'])
-    timeline = client.get_news_feed()
-    return templates.TemplateResponse("timeline.html", {"request": request, "timeline": timeline})
+    return templates.TemplateResponse("timeline.html", {"request": request, "timeline": client.get_news_feed()})
