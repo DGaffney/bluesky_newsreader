@@ -3,7 +3,7 @@ from fastapi import FastAPI, Request, Form, Depends, HTTPException
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi_login import LoginManager
-from bluesky_api import BlueskyAPI
+from bluesky_api import BlueskyAPI, is_app_passwordy
 import db
 from starlette.middleware.sessions import SessionMiddleware
 
