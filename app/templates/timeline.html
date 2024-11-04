@@ -9,7 +9,7 @@
             {% set embed = first_skeet.post.embed %}
 
             <!-- Article Preview Card -->
-            <div class="col-md-6 mb-4">
+            <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm rounded">
                     <div class="row no-gutters">
                         <div class="col-12">
@@ -42,11 +42,17 @@
                                     {% endif %}
                                 </div>
                                 <!-- Stats -->
-                                <div class="text-muted mt-2">
-                                    <p class="mb-1">Total Likes: {{ skeets|sum(attribute='post.like_count') }}</p>
-                                    <p class="mb-1">Total Reskeets: {{ skeets|sum(attribute='post.repost_count') }}</p>
-                                    <p class="mb-1">First Post Time: {{ skeets|map(attribute='post.record.created_at')|min }}</p>
-                                    <p class="mb-0">Last Post Time: {{ skeets|map(attribute='post.indexed_at')|max }}</p>
+                                <div class="text-muted mt-2 d-flex justify-content-between">
+                                    <span class="mb-1">
+                                        <i class="bi bi-heart-fill"></i> {{ skeets|sum(attribute='post.like_count') }}
+                                    </span>
+                                    <span class="mb-1">
+                                        <i class="bi bi-arrow-repeat"></i> {{ skeets|sum(attribute='post.repost_count') }}
+                                    </span>
+                                </div>
+                                <div class="text-muted">
+                                    <p class="mb-1">First Post Time: {{ skeets|map(attribute='post.record.created_at')|min|datetimeformat('%Y-%m-%d %I:%M %p') }}</p>
+                                    <p class="mb-0">Last Post Time: {{ skeets|map(attribute='post.indexed_at')|max|datetimeformat('%Y-%m-%d %I:%M %p') }}</p>
                                 </div>
                             </div>
                         </div>
