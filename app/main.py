@@ -86,29 +86,26 @@ async def show_timeline(request: Request):
 
 @app.get("/feed", response_class=HTMLResponse)
 async def show_feed(request: Request, feed_path: str = Query(...), cache_bust: bool = Query(False)):
-    if request.session.get("username"):
-        # Ensure the cache directory exists
-        os.makedirs(CACHE_DIR, exist_ok=True)
-        cache_file_path = os.path.join(CACHE_DIR, f"{feed_path.replace('/', '_')}_timeline.pkl")
-        # Check if the cache_bust parameter is True or the cache is invalid
-        if cache_bust or not is_cache_valid(cache_file_path):
-            # Fetch live data and update cache
-            client = BlueskyAPI(request.session['username'], request.session['password'])
-            timeline = client.get_feed_aggregation(f"at://{feed_path}")
-            save_to_cache(cache_file_path, timeline)
-        else:
-            # Load cached timeline using pickle
-            timeline = load_from_cache(cache_file_path)
-        # Sort the timeline based on the given criteria
-        sorted_timeline = sorted(
-            timeline.items(),
-            key=lambda item: (
-                len({skeet.post.author.handle for skeet in item[1]}),  # Number of distinct users
-                sum(skeet.post.like_count for skeet in item[1]),       # Total likes
-                sum(skeet.post.repost_count for skeet in item[1])      # Total reskeets
-            ),
-            reverse=True  # Sort in descending order
-        )
-        return templates.TemplateResponse("timeline.html", {"request": request, "timeline": sorted_timeline})
+    # Ensure the cache directory exists
+    os.makedirs(CACHE_DIR, exist_ok=True)
+    cache_file_path = os.path.join(CACHE_DIR, f"{feed_path.replace('/', '_')}_timeline.pkl")
+    # Check if the cache_bust parameter is True or the cache is invalid
+    if cache_bust or not is_cache_valid(cache_file_path):
+        # Fetch live data and update cache
+        client = BlueskyAPI(request.session['username'], request.session['password'])
+        timeline = client.get_feed_aggregation(f"at://{feed_path}")
+        save_to_cache(cache_file_path, timeline)
     else:
-        return templates.TemplateResponse("login.html", {"request": request})
+        # Load cached timeline using pickle
+        timeline = load_from_cache(cache_file_path)
+    # Sort the timeline based on the given criteria
+    sorted_timeline = sorted(
+        timeline.items(),
+        key=lambda item: (
+            len({skeet.post.author.handle for skeet in item[1]}),  # Number of distinct users
+            sum(skeet.post.like_count for skeet in item[1]),       # Total likes
+            sum(skeet.post.repost_count for skeet in item[1])      # Total reskeets
+        ),
+        reverse=True  # Sort in descending order
+    )
+    return templates.TemplateResponse("timeline.html", {"request": request, "timeline": sorted_timeline})
