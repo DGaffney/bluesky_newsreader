@@ -2,8 +2,10 @@ import re
 from atproto import Client
 from atproto_client.models.app.bsky.embed.external import ViewExternal
 import db
+
 TIMELINE_MIN = 1000
 PAGE_LIMIT = 100
+
 class BlueskyAPI:
     def __init__(self, username, password):
         self.username = username
@@ -14,13 +16,15 @@ class BlueskyAPI:
     def get_more(self, skeets, page):
         return page.cursor and len(skeets) < TIMELINE_MIN
     
-    def get_timeline(self):
-        page = self.client.get_timeline(limit=PAGE_LIMIT)
+    def get_timeline(self, fetch_function, **fetch_params):
+        page = fetch_function(limit=PAGE_LIMIT, **fetch_params)
         skeets = page.feed
+        
         while self.get_more(skeets, page):
-            page = self.client.get_timeline(limit=PAGE_LIMIT, cursor=page.cursor)
-            for skeet in page.feed:
-                skeets.append(skeet)
+            fetch_params['cursor'] = page.cursor
+            page = fetch_function(limit=PAGE_LIMIT, **fetch_params)
+            skeets.extend(page.feed)
+        
         return skeets
     
     def get_embed(self, skeet):
@@ -42,14 +46,22 @@ class BlueskyAPI:
         timeline_by_uri = {}
         for skeet in skeets:
             if self.is_link_skeet(skeet):
-                if not timeline_by_uri.get(self.get_embed(skeet).uri):
-                    timeline_by_uri[self.get_embed(skeet).uri] = []
-                timeline_by_uri[self.get_embed(skeet).uri].append(skeet)
+                embed = self.get_embed(skeet)
+                if embed and embed.uri not in timeline_by_uri:
+                    timeline_by_uri[embed.uri] = []
+                timeline_by_uri[embed.uri].append(skeet)
         return timeline_by_uri
     
-    def get_news_feed(self):
-        return self.get_links(self.get_timeline())
-
+    def get_linked_timeline(self):
+        return self.get_links(self.get_timeline(self.client.get_timeline))
+    
+    def get_feed_aggregation(self, feed_path):
+        def fetch_feed_path(limit, cursor=None):
+            params = {'feed': feed_path, 'limit': limit}
+            if cursor:
+                params['cursor'] = cursor
+            return self.client.app.bsky.feed.get_feed(params=params)
+        return self.get_links(self.get_timeline(fetch_feed_path))
 
 def is_app_passwordy(s: str) -> bool:
     """
